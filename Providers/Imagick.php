@@ -148,7 +148,9 @@ class Imagick extends \Depage\Graphics\Graphics
      **/
     protected function load()
     {
-        $this->image = new \Imagick(realpath($this->input));
+        $pageNumber = $this->getPageNumber();
+
+        $this->image = new \Imagick(realpath($this->input) . $pageNumber);
         $this->image->transformImageColorspace(\Imagick::COLORSPACE_SRGB);
         $this->setBackground();
     }
