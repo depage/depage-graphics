@@ -50,7 +50,7 @@ class Imagick extends \Depage\Graphics\Graphics
             $this->image->cropImage($width, $height, $x, $y);
             $this->image->extentImage($width, $height, 0, 0);
             $this->image->setImagePage(0, 0, 0, 0);
-            $this->size = array($width, $height);
+            $this->size = [$width, $height];
         }
     }
     // }}}
@@ -107,7 +107,7 @@ class Imagick extends \Depage\Graphics\Graphics
 
             $this->image->resizeImage($newSize[0], $newSize[1], $filter, 1, true);
             $this->image->extentImage($width, $height, $xOffset, $yOffset);
-            $this->size = array($newSize[0], $newSize[1]);
+            $this->size = [$newSize[0], $newSize[1]];
         }
     }
     // }}}
@@ -139,7 +139,7 @@ class Imagick extends \Depage\Graphics\Graphics
 
             $this->image->resizeImage($newSize[0], $newSize[1], $filter, 1, true);
             $this->image->extentImage($width, $height, $xOffset, $yOffset);
-            $this->size = array($width, $height);
+            $this->size = [$width, $height];
         }
     }
     // }}}
@@ -216,22 +216,22 @@ class Imagick extends \Depage\Graphics\Graphics
         if ($width <= 160 && $height <= 160) {
             return \Imagick::FILTER_TRIANGLE;
         }
-            return \Imagick::FILTER_LANCZOS;
-        }
+        return \Imagick::FILTER_LANCZOS;
+    }
     // }}}
     // {{{ getImageSize()
     /**
      * @brief   Determine size of input image
      *
-     * @return void
+     * @return array with width and height of the input image
      **/
-    protected function getImageSize()
+    protected function getImageSize(): array
     {
         $this->image = new \Imagick(realpath($this->input));
 
         $imageSize = [
             $this->image->getImageWidth(),
-            $this->image->getImageHeight()
+            $this->image->getImageHeight(),
         ];
 
         return $imageSize;
@@ -248,7 +248,7 @@ class Imagick extends \Depage\Graphics\Graphics
      * @param  string $output output filename
      * @return void
      **/
-    public function render($input, $output = null)
+    public function render($input, $output = null): void
     {
         parent::render($input, $output);
 

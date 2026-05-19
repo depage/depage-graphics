@@ -11,7 +11,7 @@ test:
 	cd Tests; $(MAKE) $(MFLAGS)
 
 clean:
-	$(RM) Docs/depage-docu/ Docs/html/
+	$(RM) Docs/depage-docu/ Docs/html/ vendor/
 	cd Tests; $(MAKE) $(MFLAGS) clean
 
 .PHONY: all
