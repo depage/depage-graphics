@@ -157,7 +157,6 @@ class Imagick extends \Depage\Graphics\Graphics
 
         $this->image = new \Imagick(realpath($this->input) . $pageNumber);
         $this->image->transformImageColorspace(\Imagick::COLORSPACE_SRGB);
-        $this->autoOrient();
         $this->setBackground();
     }
     // }}}
@@ -170,6 +169,7 @@ class Imagick extends \Depage\Graphics\Graphics
      **/
     protected function save()
     {
+        $this->autoOrient();
         if (in_array($this->outputFormat, ["webp"]) && $this->inputFormat == "png") {
             $this->image->setImageCompressionQuality(100);
         }
@@ -183,6 +183,12 @@ class Imagick extends \Depage\Graphics\Graphics
     }
     // }}}
 
+    // {{{ autoOrient()
+    /**
+     * @brief autoOrient
+     *
+     * @return void
+     **/
     protected function autoOrient(): void
     {
         switch ($this->image->getImageOrientation()) {
@@ -217,6 +223,7 @@ class Imagick extends \Depage\Graphics\Graphics
         }
         $this->image->setImageOrientation(\Imagick::ORIENTATION_TOPLEFT);
     }
+    // }}}
 
     // {{{ setBackground()
     /**

@@ -193,9 +193,12 @@ class Gd extends \Depage\Graphics\Graphics
      **/
     protected function save()
     {
+        $this->autoOrient();
+
         $bg = $this->createBackground($this->size[0], $this->size[1]);
         imagecopy($bg, $this->image, 0, 0, 0, 0, $this->size[0], $this->size[1]);
         $this->image = $bg;
+
         $result = false;
 
         if ($this->outputFormat == 'gif' && function_exists('imagegif')) {
@@ -210,6 +213,46 @@ class Gd extends \Depage\Graphics\Graphics
         }
         if (!$result) {
             throw new \Depage\Graphics\Exceptions\Exception('Could not save output image.');
+        }
+    }
+    // }}}
+
+    // {{{ autoOrient()
+    /**
+     * @brief   Auto orient image
+     *
+     * @return void
+     **/
+    protected function autoOrient(): void
+    {
+        $exif = @exif_read_data($this->input);
+
+        if (isset($exif['Orientation'])) {
+            switch ($exif['Orientation']) {
+                case 2:
+                    imageflip($this->image, IMG_FLIP_HORIZONTAL);
+                    break;
+                case 3:
+                    $this->image = imagerotate($this->image, 180, 0);
+                    break;
+                case 4:
+                    imageflip($this->image, IMG_FLIP_VERTICAL);
+                    break;
+                case 5:
+                    $this->image = imagerotate($this->image, -90, 0);
+                    imageflip($this->image, IMG_FLIP_HORIZONTAL);
+                    break;
+                case 6:
+                    $this->image = imagerotate($this->image, -90, 0);
+                    break;
+                case 7:
+                    $this->image = imagerotate($this->image, -90, 0);
+                    imageflip($this->image, IMG_FLIP_VERTICAL);
+                    break;
+                case 8:
+                    $this->image = imagerotate($this->image, 90, 0);
+                    break;
+            }
         }
     }
     // }}}
