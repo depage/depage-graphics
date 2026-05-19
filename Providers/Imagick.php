@@ -90,7 +90,7 @@ class Imagick extends \Depage\Graphics\Graphics
      **/
     protected function thumb($width, $height)
     {
-        list($width, $height) = $this->dimensions($width, $height);
+        [$width, $height] = $this->dimensions($width, $height);
 
         if (!$this->bypassTest($width, $height)) {
             $newSize = $this->dimensions($width, null);
@@ -120,7 +120,7 @@ class Imagick extends \Depage\Graphics\Graphics
      **/
     protected function thumbfill($width, $height, $centerX = 50, $centerY = 50)
     {
-        list($width, $height) = $this->dimensions($width, $height);
+        [$width, $height] = $this->dimensions($width, $height);
 
         if (!$this->bypassTest($width, $height, $centerX - 50, $centerY - 50)) {
             $newSize = $this->dimensions($width, null);
@@ -151,12 +151,13 @@ class Imagick extends \Depage\Graphics\Graphics
      * @param mixed
      * @return void
      **/
-    protected function load()
+    protected function load(): void
     {
         $pageNumber = $this->getPageNumber();
 
         $this->image = new \Imagick(realpath($this->input) . $pageNumber);
         $this->image->transformImageColorspace(\Imagick::COLORSPACE_SRGB);
+        $this->autoOrient();
         $this->setBackground();
     }
     // }}}
@@ -181,6 +182,41 @@ class Imagick extends \Depage\Graphics\Graphics
         }
     }
     // }}}
+
+    protected function autoOrient(): void
+    {
+        switch ($this->image->getImageOrientation()) {
+            case \Imagick::ORIENTATION_TOPLEFT:
+                break;
+            case \Imagick::ORIENTATION_TOPRIGHT:
+                $this->image->flopImage();
+                break;
+            case \Imagick::ORIENTATION_BOTTOMRIGHT:
+                $this->image->rotateImage("#000", 180);
+                break;
+            case \Imagick::ORIENTATION_BOTTOMLEFT:
+                $this->image->flopImage();
+                $this->image->rotateImage("#000", 180);
+                break;
+            case \Imagick::ORIENTATION_LEFTTOP:
+                $this->image->flopImage();
+                $this->image->rotateImage("#000", -90);
+                break;
+            case \Imagick::ORIENTATION_RIGHTTOP:
+                $this->image->rotateImage("#000", 90);
+                break;
+            case \Imagick::ORIENTATION_RIGHTBOTTOM:
+                $this->image->flopImage();
+                $this->image->rotateImage("#000", 90);
+                break;
+            case \Imagick::ORIENTATION_LEFTBOTTOM:
+                $this->image->rotateImage("#000", -90);
+                break;
+            default: // Invalid orientation
+                break;
+        }
+        $this->image->setImageOrientation(\Imagick::ORIENTATION_TOPLEFT);
+    }
 
     // {{{ setBackground()
     /**

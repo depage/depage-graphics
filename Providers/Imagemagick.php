@@ -45,8 +45,8 @@ class Imagemagick extends \Depage\Graphics\Graphics
     {
         parent::__construct($options);
 
-        $this->executable = isset($options['executable']) ? $options['executable'] : null;
-        $this->timeout = isset($options['timeout']) ? $options['timeout'] : 0;
+        $this->executable = $options['executable'] ?? null;
+        $this->timeout = $options['timeout'] ?? 0;
     }
     // }}}
 
